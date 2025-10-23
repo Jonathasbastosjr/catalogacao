@@ -1,0 +1,1 @@
+document.getElementById('grid').innerHTML='Protótipo de catálogo funcionando!';
