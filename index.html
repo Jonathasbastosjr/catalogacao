@@ -1,10 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Catálogo de Acervo</title><link rel="stylesheet" href="styles.css" /></head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catálogo de Acervo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
 <body>
-<header><h1>Catálogo de Acervo</h1></header>
-<main id="grid"></main>
-<script src="app.js"></script>
+  <header class="topbar">
+    <h1>Catálogo de Acervo</h1>
+    <nav>
+      <a href="cadastrar.html" class="link">+ Cadastrar nova obra</a>
+      <button id="btnImport" class="secondary">Importar JSON</button>
+      <button id="btnExport" class="secondary">Exportar JSON</button>
+    </nav>
+  </header>
+
+  <section class="searchbar" aria-label="Busca">
+    <input id="qArtist" type="search" placeholder="Artista" aria-label="Buscar por artista" />
+    <input id="qTitle" type="search" placeholder="Título da obra" aria-label="Buscar por título" />
+    <input id="qTechnique" type="search" placeholder="Técnica (ex.: óleo sobre tela)" aria-label="Buscar por técnica" />
+    <input id="qYear" type="search" placeholder="Ano (ex.: 2004)" aria-label="Buscar por ano" />
+    <button id="btnClear" class="secondary">Limpar</button>
+  </section>
+
+  <main id="grid" class="grid" aria-live="polite"></main>
+
+  <dialog id="detailDialog">
+    <article id="detailContent"></article>
+    <form method="dialog">
+      <button>Fechar</button>
+    </form>
+  </dialog>
+
+  <footer>
+    <small>Site estático com armazenamento local (localStorage). Use “Exportar JSON” para backup e “Importar JSON” para restaurar.</small>
+  </footer>
+
+  <input id="fileImport" type="file" accept="application/json" hidden />
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

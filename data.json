@@ -4,6 +4,56 @@
     "title": "Natureza-morta com Garrafa",
     "artist": {
       "name": "Ana Souza"
-    }
+    },
+    "date": "2012",
+    "technique": "óleo sobre tela",
+    "support": "tela",
+    "category": "pintura",
+    "dimensions": {
+      "h_cm": 50,
+      "w_cm": 70
+    },
+    "accession_number": "INV-2015-001",
+    "location": "Reserva A / Est. 2 / Prat. 3",
+    "condition": "estável",
+    "keywords": [
+      "natureza-morta",
+      "garrafa",
+      "década 2010"
+    ],
+    "images": [
+      {
+        "url": "https://picsum.photos/seed/ba101/800/600",
+        "view": "frontal"
+      }
+    ]
+  },
+  {
+    "artwork_id": "BA-000122",
+    "title": "Retrato de Jovem",
+    "artist": {
+      "name": "Carlos Lima"
+    },
+    "date": "2001",
+    "technique": "acrílica sobre tela",
+    "support": "tela",
+    "category": "pintura",
+    "dimensions": {
+      "h_cm": 60,
+      "w_cm": 50
+    },
+    "accession_number": "INV-2005-233",
+    "location": "Exposição Permanente / Sala 1",
+    "condition": "atenção",
+    "keywords": [
+      "retrato",
+      "anos 2000"
+    ],
+    "images": [
+      {
+        "url": "https://picsum.photos/seed/ba122/800/600",
+        "view": "frontal"
+      }
+    ]
   }
 ]

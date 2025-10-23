@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastrar Obra — Catálogo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Cadastrar nova obra</h1>
+    <nav>
+      <a href="index.html" class="link">← Voltar ao catálogo</a>
+      <button id="btnExport" class="secondary">Exportar JSON</button>
+    </nav>
+  </header>
+
+  <main class="formwrap">
+    <form id="formObra" class="form">
+      <div class="grid2">
+        <label>Artista
+          <input name="artist" required placeholder="Nome do artista" />
+        </label>
+        <label>Título
+          <input name="title" required placeholder="Título da obra" />
+        </label>
+        <label>Ano
+          <input name="year" inputmode="numeric" pattern="\d{0,4}" placeholder="ex.: 2004" />
+        </label>
+        <label>Técnica
+          <input name="technique" placeholder="ex.: óleo sobre tela" />
+        </label>
+        <label>Suporte
+          <input name="support" placeholder="ex.: tela, papel, madeira..." />
+        </label>
+        <label>Categoria
+          <input name="category" placeholder="ex.: pintura, gravura, escultura..." />
+        </label>
+      </div>
+
+      <div class="grid3">
+        <label>Altura (cm)
+          <input name="h_cm" inputmode="decimal" step="0.01" />
+        </label>
+        <label>Largura (cm)
+          <input name="w_cm" inputmode="decimal" step="0.01" />
+        </label>
+        <label>Profundidade (cm)
+          <input name="d_cm" inputmode="decimal" step="0.01" />
+        </label>
+      </div>
+
+      <div class="grid2">
+        <label>ID / Código
+          <input name="artwork_id" placeholder="BA-000001" />
+        </label>
+        <label>Nº de Tombo
+          <input name="accession_number" placeholder="INV-2025-001" />
+        </label>
+      </div>
+
+      <label>Localização
+        <input name="location" placeholder="Reserva A / Estante 2 / Prateleira 3" />
+      </label>
+
+      <label>Estado de conservação
+        <select name="condition">
+          <option value="">—</option>
+          <option>estável</option>
+          <option>atenção</option>
+          <option>intervenção necessária</option>
+        </select>
+      </label>
+
+      <label>Palavras‑chave (separadas por vírgula)
+        <input name="keywords" placeholder="abstrato, década 2000, óleo" />
+      </label>
+
+      <label>Imagem principal (URL)
+        <input name="image_url" placeholder="https://exemplo.com/obra.jpg" />
+      </label>
+
+      <label>Ou enviar imagem (gera link local)
+        <input name="image_file" type="file" accept="image/*" />
+      </label>
+
+      <div class="actions">
+        <button type="submit">Salvar obra</button>
+        <button type="button" id="btnClear" class="secondary">Limpar</button>
+      </div>
+    </form>
+  </main>
+
+  <footer>
+    <small>As obras são salvas no seu navegador (localStorage). Lembre-se de exportar JSON para backup.</small>
+  </footer>
+
+  <script src="storage.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
