@@ -1,4 +1,4 @@
-// app.js — busca global, ficha com excluir/editar e Exportar PDF (sem artwork_id no PDF)
+// app.js v7
 const grid = document.getElementById('grid');
 const qGlobal = document.getElementById('qGlobal');
 const btnClear = document.getElementById('btnClear');
@@ -15,7 +15,7 @@ function matches(it){
   const q = normalize(qGlobal.value).trim();
   if(!q) return true;
   const tokens = q.split(/\s+/).filter(Boolean);
-  const hay = normalize([it.title, it.artist?.name, it.technique, it.support, it.category, it.date, it.accession_number, it.artwork_id, it.location, (it.keywords||[]).join(' ')].filter(Boolean).join(' '));
+  const hay = normalize([it.title, it.artist?.name, it.technique, it.support, it.category, it.date, it.loan_status, it.observations, it.location, it.accession_number, it.artwork_id, (it.keywords||[]).join(' ')].filter(Boolean).join(' '));
   return tokens.every(tok => hay.includes(tok));
 }
 function fmtDims(it){ return it.dimensions ? [it.dimensions.h_cm, it.dimensions.w_cm, it.dimensions.d_cm].filter(v=>v!=null).join(' × ') + ' cm' : '-'; }
@@ -37,7 +37,7 @@ function render(){
     const addBadge = (txt)=>{ const b=document.createElement('span'); b.className='badge'; b.textContent=txt; badges.appendChild(b); };
     if(it.technique) addBadge(it.technique);
     if(it.category) addBadge(it.category);
-    if(it.condition) addBadge(it.condition);
+    if(it.loan_status) addBadge(it.loan_status);
     const btn = document.createElement('button'); btn.textContent = 'Ver ficha'; btn.addEventListener('click', ()=>openDetail(it));
     meta.append(title, artist, badges);
     card.append(thumb, meta, btn);
@@ -60,10 +60,10 @@ function openDetail(it){
       ${dlTerm('Suporte', it.support)}
       ${dlTerm('Dimensões', fmtDims(it))}
       ${dlTerm('Categoria', it.category)}
-      ${dlTerm('Nº de Tombo', it.accession_number)}
-      ${dlTerm('ID', it.artwork_id)}
+      ${dlTerm('Emprestada ou em Restauro', it.loan_status || '')}
+      ${dlTerm('Observações', it.observations || '')}
       ${dlTerm('Localização', it.location)}
-      ${dlTerm('Estado', it.condition)}
+      ${dlTerm('ID', it.artwork_id)}
       ${dlTerm('Palavras‑chave', kws)}
       ${dlTerm('Procedência', it.provenance)}
     </dl>

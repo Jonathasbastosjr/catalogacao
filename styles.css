@@ -1,7 +1,7 @@
 *{box-sizing:border-box}html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
 .topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e7e7e7;background:#fff;position:sticky;top:0;z-index:2}
 .topbar h1{font-size:1.2rem;margin:0}
-.topbar nav{display:flex;gap:8px;align-items:center}
+.topbar nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .link{padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#f8f8f8;text-decoration:none;color:#111}
 .link:hover{background:#f0f0f0}
 .secondary{padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fafafa;cursor:pointer}
@@ -26,10 +26,10 @@ dialog{border:none;border-radius:12px;max-width:980px;width:95vw;padding:0 0 12p
 .detail .hero img{width:100%;height:100%;object-fit:contain;background:#000}
 .detail .info{padding:16px 18px;display:grid;gap:10px}
 .info h2{margin:0}
-.info dl{display:grid;grid-template-columns:160px 1fr;gap:8px 12px;margin:6px 0}
+.info dl{display:grid;grid-template-columns:180px 1fr;gap:8px 12px;margin:6px 0}
 .info dt{color:#555}
 .info dd{margin:0}
-.detail .toolbar{display:flex;gap:8px;align-items:center;margin-top:8px}
+.detail .toolbar{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
 .deleteBtn{background:#ffe9e9;border:1px solid #f4c6c6;color:#b10000;padding:8px 10px;border-radius:8px;cursor:pointer}
 .deleteBtn:hover{background:#ffdcdc}
 .editBtn{background:#eef5ff;border:1px solid #c9dcff;color:#0842a0;padding:8px 10px;border-radius:8px;cursor:pointer}
@@ -37,9 +37,13 @@ dialog{border:none;border-radius:12px;max-width:980px;width:95vw;padding:0 0 12p
 footer{padding:14px 18px;border-top:1px solid #eee;color:#666}
 .formwrap{padding:18px}
 .form{display:grid;gap:14px;max-width:920px;margin:auto}
-.form input,.form select{padding:10px;border:1px solid #ddd;border-radius:8px;width:100%}
+.form input,.form select,.form textarea{padding:10px;border:1px solid #ddd;border-radius:8px;width:100%}
 .form input.readonly{background:#f7f7f7;color:#555}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.actions{display:flex;gap:10px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.previewWrap{display:flex;gap:12px;align-items:center}
+.preview{width:160px;height:120px;background:#f3f3f3;border:1px dashed #bbb;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+.preview img{width:100%;height:100%;object-fit:cover}
+.previewHint{color:#666;font-size:.9rem}
 @media (max-width:900px){.detail{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}

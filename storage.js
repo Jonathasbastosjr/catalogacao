@@ -1,6 +1,6 @@
-// storage.js — utilitário com edição e helpers (v5)
-const STORAGE_KEY = 'catalogo_obras_v5';
-const EDIT_KEY = 'catalogo_edit_target_v5';
+// storage.js v7
+const STORAGE_KEY = 'catalogo_obras_v7';
+const EDIT_KEY = 'catalogo_edit_target_v7';
 
 function getAllWorks(){
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -17,11 +17,11 @@ function getAllWorks(){
       support: "tela",
       category: "pintura",
       dimensions: { h_cm: 50, w_cm: 70 },
-      accession_number: "INV-2015-001",
+      loan_status: "",
+      observations: "",
       location: "Reserva A / Est. 2 / Prat. 3",
-      condition: "estável",
       keywords: ["natureza-morta","garrafa","década 2010"],
-      images: [{ url: "https://picsum.photos/seed/ba101/800/600", view: "frontal" }]
+      images: [{ url: "imagens/exemplo1.jpg", view: "frontal" }]
     },
     {
       artwork_id: "# 00002",
@@ -32,11 +32,11 @@ function getAllWorks(){
       support: "tela",
       category: "pintura",
       dimensions: { h_cm: 60, w_cm: 50 },
-      accession_number: "INV-2005-233",
+      loan_status: "Emprestada",
+      observations: "Em mostra temporária.",
       location: "Exposição Permanente / Sala 1",
-      condition: "atenção",
       keywords: ["retrato","anos 2000"],
-      images: [{ url: "https://picsum.photos/seed/ba122/800/600", view: "frontal" }]
+      images: [{ url: "imagens/exemplo2.jpg", view: "frontal" }]
     }
   ];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
@@ -61,22 +61,11 @@ function updateWorkByTarget(updated, target){
   if(idx>=0){ list[idx]=updated; saveAllWorks(list); return true; }
   return false;
 }
-// === ID sequencial "# 00001" ===
-function extractNumberFromId(id){
-  if(!id) return null;
-  const m = id.match(/#\s?(\d+)/);
-  return m ? parseInt(m[1],10) : null;
-}
+function extractNumberFromId(id){ const m = (id||'').match(/#\s?(\d+)/); return m ? parseInt(m[1],10) : null; }
 function nextArtworkId(){
-  const list = getAllWorks();
-  let maxN = 0;
-  for(const w of list){
-    const n = extractNumberFromId(w.artwork_id||'');
-    if(n && n>maxN) maxN = n;
-  }
-  const next = maxN + 1;
-  const padded = String(next).padStart(5,'0');
-  return `# ${padded}`;
+  const list = getAllWorks(); let maxN = 0;
+  for(const w of list){ const n = extractNumberFromId(w.artwork_id||''); if(n && n>maxN) maxN = n; }
+  const next = maxN + 1; const padded = String(next).padStart(5,'0'); return `# ${padded}`;
 }
 function exportJSON(){
   const blob = new Blob([localStorage.getItem(STORAGE_KEY) || '[]'], {type:'application/json'});
