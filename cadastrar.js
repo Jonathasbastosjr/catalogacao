@@ -1,4 +1,4 @@
-// cadastrar.js — upload para servidor (PHP)
+// cadastrar.js — HOTFIX diagnóstico de upload (Safari/JSON)
 function setValue(name, val){ const el = document.forms['formObra'].elements[name]; if(el) el.value = val ?? ''; }
 const form = document.getElementById('formObra');
 const btnExport = document.getElementById('btnExport');
@@ -7,11 +7,11 @@ const titleEl = document.getElementById('formTitle');
 const imgPreview = document.getElementById('imgPreview');
 const fileInput = document.getElementById('image_file');
 
-btnExport.addEventListener('click', exportJSON);
-btnClear.addEventListener('click', ()=> form.reset());
+btnExport?.addEventListener('click', exportJSON);
+btnClear?.addEventListener('click', ()=> form.reset());
 
-imgPreview.addEventListener('click', ()=> fileInput.click());
-fileInput.addEventListener('change', ()=>{
+imgPreview?.addEventListener('click', ()=> fileInput.click());
+fileInput?.addEventListener('change', ()=>{
   const f = fileInput.files?.[0];
   if(!f){ imgPreview.innerHTML = '<span>Imagem da obra</span>'; return; }
   const url = URL.createObjectURL(f);
@@ -44,7 +44,7 @@ function preloadIfCreating(){
   setValue('artwork_id', next);
 }
 
-form.addEventListener('submit', async (e)=>{
+form?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const fd = new FormData(form);
 
@@ -52,6 +52,7 @@ form.addEventListener('submit', async (e)=>{
   const target = isEdit ? getEditTarget() : null;
   const prev = target?.work;
 
+  // HOTFIX: Upload com diagnóstico — lê como texto e tenta parsear JSON
   let imageURL = prev?.images?.[0]?.url || '';
   const file = fileInput.files?.[0];
   if(file){
@@ -62,11 +63,17 @@ form.addEventListener('submit', async (e)=>{
     ufd.append('title', (fd.get('title')||'').toString());
     try{
       const resp = await fetch('upload.php', { method:'POST', body: ufd });
-      const data = await resp.json();
-      if(!resp.ok || !data?.ok){ throw new Error(data?.error || 'Falha no upload'); }
+      const raw = await resp.text();
+      let data;
+      try { data = JSON.parse(raw); } catch(parseErr){
+        throw new Error('Resposta não-JSON do servidor:\n' + raw.slice(0, 1000));
+      }
+      if(!resp.ok || !data?.ok){
+        throw new Error((data && data.error) ? data.error : 'Falha no upload (sem mensagem).');
+      }
       imageURL = data.url;
     }catch(err){
-      alert('Erro ao enviar a imagem para o servidor: ' + (err?.message || err));
+      alert('Erro ao enviar a imagem para o servidor:\n' + (err?.message || err));
       return;
     }
   }else if(!isEdit){
