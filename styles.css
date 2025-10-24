@@ -32,6 +32,8 @@ dialog{border:none;border-radius:12px;max-width:980px;width:95vw;padding:0 0 12p
 .detail .toolbar{display:flex;gap:8px;align-items:center;margin-top:8px}
 .deleteBtn{background:#ffe9e9;border:1px solid #f4c6c6;color:#b10000;padding:8px 10px;border-radius:8px;cursor:pointer}
 .deleteBtn:hover{background:#ffdcdc}
+.editBtn{background:#eef5ff;border:1px solid #c9dcff;color:#0842a0;padding:8px 10px;border-radius:8px;cursor:pointer}
+.editBtn:hover{background:#e0ecff}
 footer{padding:14px 18px;border-top:1px solid #eee;color:#666}
 .formwrap{padding:18px}
 .form{display:grid;gap:14px;max-width:920px;margin:auto}

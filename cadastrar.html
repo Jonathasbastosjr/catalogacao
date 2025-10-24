@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cadastrar Obra — Catálogo</title>
+  <title>Cadastrar/Editar Obra — Catálogo</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <h1>Cadastrar nova obra</h1>
+    <h1 id="formTitle">Cadastrar nova obra</h1>
     <nav>
       <a href="index.html" class="link">← Voltar ao catálogo</a>
       <button id="btnExport" class="secondary">Exportar JSON</button>
@@ -85,7 +85,7 @@
       </label>
 
       <div class="actions">
-        <button type="submit">Salvar obra</button>
+        <button type="submit">Salvar</button>
         <button type="button" id="btnClear" class="secondary">Limpar</button>
       </div>
     </form>
