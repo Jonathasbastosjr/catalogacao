@@ -16,25 +16,20 @@
     </nav>
   </header>
 
-  <section class="searchbar" aria-label="Busca">
-    <input id="qArtist" type="search" placeholder="Artista" aria-label="Buscar por artista" />
-    <input id="qTitle" type="search" placeholder="Título da obra" aria-label="Buscar por título" />
-    <input id="qTechnique" type="search" placeholder="Técnica (ex.: óleo sobre tela)" aria-label="Buscar por técnica" />
-    <input id="qYear" type="search" placeholder="Ano (ex.: 2004)" aria-label="Buscar por ano" />
+  <section class="searchbar single" aria-label="Busca global">
+    <input id="qGlobal" type="search" placeholder="Pesquisar por artista, título, técnica, ano, palavras‑chave, ID, tombo, localização..." aria-label="Busca global" />
     <button id="btnClear" class="secondary">Limpar</button>
   </section>
 
   <main id="grid" class="grid" aria-live="polite"></main>
 
   <dialog id="detailDialog">
+    <button id="btnCloseDialog" title="Fechar" class="closeX" aria-label="Fechar">×</button>
     <article id="detailContent"></article>
-    <form method="dialog">
-      <button>Fechar</button>
-    </form>
   </dialog>
 
   <footer>
-    <small>Site estático com armazenamento local (localStorage). Use “Exportar JSON” para backup e “Importar JSON” para restaurar.</small>
+    <small>Site estático com armazenamento local (localStorage). Faça backup com “Exportar JSON”.</small>
   </footer>
 
   <input id="fileImport" type="file" accept="application/json" hidden />

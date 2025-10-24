@@ -1,37 +1,32 @@
-// app.js — renderização, busca e ficha
+// app.js — busca global, render e ficha com exclusão
 const grid = document.getElementById('grid');
-const qArtist = document.getElementById('qArtist');
-const qTitle = document.getElementById('qTitle');
-const qTechnique = document.getElementById('qTechnique');
-const qYear = document.getElementById('qYear');
+const qGlobal = document.getElementById('qGlobal');
 const btnClear = document.getElementById('btnClear');
 const btnExport = document.getElementById('btnExport');
 const btnImport = document.getElementById('btnImport');
 const fileImport = document.getElementById('fileImport');
 const dialog = document.getElementById('detailDialog');
 const detail = document.getElementById('detailContent');
+const btnCloseDialog = document.getElementById('btnCloseDialog');
 
 let DATA = getAllWorks();
 
 function normalize(s){ return (s||'').toString().toLowerCase(); }
 
 function matches(it){
-  const a = normalize(qArtist.value);
-  const t = normalize(qTitle.value);
-  const tec = normalize(qTechnique.value);
-  const y = normalize(qYear.value);
+  const q = normalize(qGlobal.value).trim();
+  if(!q) return true;
+  const tokens = q.split(/\s+/).filter(Boolean);
 
-  const artist = normalize(it.artist?.name);
-  const title = normalize(it.title);
-  const tech = normalize(it.technique);
-  const year = normalize(it.date);
+  const hay = normalize(
+    [
+      it.title, it.artist?.name, it.technique, it.support, it.category,
+      it.date, it.accession_number, it.artwork_id, it.location,
+      (it.keywords||[]).join(' ')
+    ].filter(Boolean).join(' ')
+  );
 
-  const okA = !a || artist.includes(a);
-  const okT = !t || title.includes(t);
-  const okTec = !tec || tech.includes(tec);
-  const okY = !y || year.includes(y);
-
-  return okA && okT && okTec && okY;
+  return tokens.every(tok => hay.includes(tok));
 }
 
 function render(){
@@ -98,15 +93,35 @@ function openDetail(it){
       ${dlTerm('Palavras‑chave', kws)}
       ${dlTerm('Procedência', it.provenance)}
     </dl>
+    <div class="toolbar">
+      <button class="deleteBtn" id="btnDelete">🗑️ Excluir obra</button>
+    </div>
   </div>`;
 
   detail.innerHTML = `<div class="detail">${hero}${info}</div>`;
+
+  // close X
+  btnCloseDialog.onclick = ()=> dialog.close();
+
+  // delete handler
+  const del = document.getElementById('btnDelete');
+  del.onclick = ()=>{
+    const id = it.artwork_id || '';
+    const sig = makeSignature(it);
+    if(confirm('Tem certeza que deseja excluir esta obra? Esta ação não pode ser desfeita.')){
+      removeWorkByIdOrSignature(id, sig);
+      dialog.close();
+      render();
+      alert('Obra excluída.');
+    }
+  };
+
   dialog.showModal();
 }
 
 // eventos
-[qArtist, qTitle, qTechnique, qYear].forEach(inp => inp.addEventListener('input', render));
-btnClear.addEventListener('click', ()=>{ qArtist.value='';qTitle.value='';qTechnique.value='';qYear.value=''; render(); });
+qGlobal.addEventListener('input', render);
+btnClear.addEventListener('click', ()=>{ qGlobal.value=''; render(); });
 btnExport.addEventListener('click', exportJSON);
 btnImport.addEventListener('click', ()=>fileImport.click());
 fileImport.addEventListener('change', (e)=>{

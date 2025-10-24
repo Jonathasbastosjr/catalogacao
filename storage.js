@@ -1,12 +1,12 @@
-// storage.js — utilitário de armazenamento local + bootstrap inicial de dados
-const STORAGE_KEY = 'catalogo_obras_v1';
+// storage.js — utilitário de armazenamento local + bootstrap inicial
+const STORAGE_KEY = 'catalogo_obras_v2';
 
 function getAllWorks(){
   const raw = localStorage.getItem(STORAGE_KEY);
   if(raw){
     try { return JSON.parse(raw); } catch(e){ console.warn('JSON inválido, resetando.'); }
   }
-  // seed inicial, caso não exista
+  // seed inicial
   const seed = [
     {
       artwork_id: "BA-000101",
@@ -49,8 +49,22 @@ function saveAllWorks(list){
 
 function addWork(work){
   const list = getAllWorks();
-  list.unshift(work); // adiciona no topo
+  list.unshift(work);
   saveAllWorks(list);
+}
+
+function removeWorkByIdOrSignature(id, signature){
+  let list = getAllWorks();
+  if(id){
+    list = list.filter(w => (w.artwork_id||'') !== id);
+  } else if(signature){
+    list = list.filter(w => makeSignature(w) !== signature);
+  }
+  saveAllWorks(list);
+}
+
+function makeSignature(w){
+  return [w.title||'', w.artist?.name||'', w.date||'', w.technique||''].join(' | ').toLowerCase();
 }
 
 function exportJSON(){

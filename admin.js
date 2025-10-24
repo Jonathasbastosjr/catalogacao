@@ -10,7 +10,6 @@ form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const fd = new FormData(form);
 
-  // Se o usuário enviar arquivo de imagem, converte para dataURL
   async function fileToDataURL(file){
     return new Promise((resolve,reject)=>{
       const fr = new FileReader();
