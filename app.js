@@ -1,4 +1,4 @@
-// app.js — busca global, ficha com excluir/editar e Exportar PDF
+// app.js — busca global, ficha com excluir/editar e Exportar PDF (sem artwork_id no PDF)
 const grid = document.getElementById('grid');
 const qGlobal = document.getElementById('qGlobal');
 const btnClear = document.getElementById('btnClear');
@@ -10,10 +10,7 @@ const dialog = document.getElementById('detailDialog');
 const detail = document.getElementById('detailContent');
 const btnCloseDialog = document.getElementById('btnCloseDialog');
 
-let DATA = getAllWorks();
-
 function normalize(s){ return (s||'').toString().toLowerCase(); }
-
 function matches(it){
   const q = normalize(qGlobal.value).trim();
   if(!q) return true;
@@ -21,37 +18,27 @@ function matches(it){
   const hay = normalize([it.title, it.artist?.name, it.technique, it.support, it.category, it.date, it.accession_number, it.artwork_id, it.location, (it.keywords||[]).join(' ')].filter(Boolean).join(' '));
   return tokens.every(tok => hay.includes(tok));
 }
-
+function fmtDims(it){ return it.dimensions ? [it.dimensions.h_cm, it.dimensions.w_cm, it.dimensions.d_cm].filter(v=>v!=null).join(' × ') + ' cm' : '-'; }
 function currentItems(){ return getAllWorks().filter(matches); }
 
 function render(){
-  DATA = getAllWorks();
+  const items = currentItems();
   grid.innerHTML = '';
-  const items = DATA.filter(matches);
-  if(items.length === 0){
-    grid.innerHTML = '<p>Nenhum registro encontrado.</p>';
-    return;
-  }
+  if(items.length === 0){ grid.innerHTML = '<p>Nenhum registro encontrado.</p>'; return; }
   for(const it of items){
-    const card = document.createElement('div');
-    card.className = 'card';
-
+    const card = document.createElement('div'); card.className = 'card';
     const thumb = document.createElement('div'); thumb.className = 'thumb';
     const img = document.createElement('img'); img.src = it.images?.[0]?.url || 'https://via.placeholder.com/640x480?text=Sem+Imagem'; img.alt = it.title || 'Obra';
     thumb.appendChild(img);
-
     const meta = document.createElement('div'); meta.className = 'meta';
     const title = document.createElement('div'); title.className='title'; title.textContent = it.title || '—';
     const artist = document.createElement('div'); artist.className='artist'; artist.textContent = it.artist?.name || 'Autor desconhecido';
-
     const badges = document.createElement('div'); badges.className='badges';
     const addBadge = (txt)=>{ const b=document.createElement('span'); b.className='badge'; b.textContent=txt; badges.appendChild(b); };
     if(it.technique) addBadge(it.technique);
     if(it.category) addBadge(it.category);
     if(it.condition) addBadge(it.condition);
-
     const btn = document.createElement('button'); btn.textContent = 'Ver ficha'; btn.addEventListener('click', ()=>openDetail(it));
-
     meta.append(title, artist, badges);
     card.append(thumb, meta, btn);
     grid.appendChild(card);
@@ -59,12 +46,9 @@ function render(){
 }
 
 function dlTerm(dt, dd){ return `<dt>${dt}</dt><dd>${dd ?? '-'}</dd>`; }
-function fmtDims(it){ return it.dimensions ? [it.dimensions.h_cm, it.dimensions.w_cm, it.dimensions.d_cm].filter(v=>v!=null).join(' × ') + ' cm' : '-'; }
-
 function openDetail(it){
   const imgs = (it.images||[]).map(im=>`<img src="${im.url}" alt="${it.title}" style="max-width:100%;height:auto;display:block;margin-bottom:8px;">`).join('') || '<em>Sem imagem</em>';
   const kws = (it.keywords||[]).join(', ');
-
   const hero = `<div class="hero">${imgs}</div>`;
   const info = `
   <div class="info">
@@ -88,34 +72,19 @@ function openDetail(it){
       <button class="deleteBtn" id="btnDelete">🗑️ Excluir</button>
     </div>
   </div>`;
-
   detail.innerHTML = `<div class="detail">${hero}${info}</div>`;
-
   btnCloseDialog.onclick = ()=> dialog.close();
-
   document.getElementById('btnDelete').onclick = ()=>{
-    const id = it.artwork_id || '';
-    const sig = makeSignature(it);
-    if(confirm('Tem certeza que deseja excluir esta obra? Esta ação não pode ser desfeita.')){
-      removeWorkByIdOrSignature(id, sig);
-      dialog.close();
-      render();
-      alert('Obra excluída.');
-    }
+    const id = it.artwork_id || ''; const sig = makeSignature(it);
+    if(confirm('Tem certeza que deseja excluir esta obra? Esta ação não pode ser desfeita.')){ removeWorkByIdOrSignature(id, sig); dialog.close(); render(); alert('Obra excluída.'); }
   };
-
-  document.getElementById('btnEdit').onclick = ()=>{
-    setEditTarget(it);
-    window.location.href = 'cadastrar.html?edit=1';
-  };
-
+  document.getElementById('btnEdit').onclick = ()=>{ setEditTarget(it); window.location.href = 'cadastrar.html?edit=1'; };
   dialog.showModal();
 }
 
-// Exportar PDF via janela de impressão (salvar como PDF)
+// Exportar PDF — NÃO inclui artwork_id
 function exportPDF(items){
-  const win = window.open('', '_blank');
-  if(!win){ alert('Bloqueio de pop-up: permita pop-ups para exportar PDF.'); return; }
+  const win = window.open('', '_blank'); if(!win){ alert('Bloqueio de pop-up: permita pop-ups para exportar PDF.'); return; }
   const styles = `
   <style>
     @page { size: A4; margin: 18mm 14mm; }
@@ -127,12 +96,9 @@ function exportPDF(items){
     .thumb img { width: 100%; height: 100%; object-fit: cover; }
     .meta { font-size: 10.5pt; line-height: 1.35; }
     .meta div { margin: 2px 0; }
-    .page-break { page-break-after: always; height: 0; }
-    /* 7 itens por página: força quebra após cada 7º item */
     .item:nth-of-type(7n) + .sep { page-break-after: always; }
   </style>`;
-
-  const rows = items.map((it, idx) => {
+  const rows = items.map(it => {
     const img = (it.images && it.images[0] && it.images[0].url) ? `<img src="${it.images[0].url}" alt="">` : '';
     const dims = fmtDims(it);
     return `
@@ -145,15 +111,12 @@ function exportPDF(items){
     </div>
     <div class="sep"></div>`;
   }).join('');
-
   win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Exportação — Catálogo</title>${styles}</head><body>
     <h1>Lista de obras (${items.length})</h1>
     ${rows}
   </body></html>`);
   win.document.close();
-  // aguarda imagens carregarem antes de imprimir
-  const imgs = win.document.images;
-  let loaded = 0;
+  const imgs = win.document.images; let loaded = 0;
   if(imgs.length === 0){ win.focus(); win.print(); return; }
   for(const img of imgs){
     if(img.complete) { loaded++; if(loaded===imgs.length){ win.focus(); win.print(); } }
@@ -165,14 +128,7 @@ qGlobal.addEventListener('input', render);
 btnClear.addEventListener('click', ()=>{ qGlobal.value=''; render(); });
 btnExport.addEventListener('click', exportJSON);
 btnImport.addEventListener('click', ()=>fileImport.click());
-fileImport.addEventListener('change', (e)=>{
-  const f = e.target.files?.[0];
-  if(f) importJSONFromFile(f, ok=>{ if(ok){ alert('Dados importados com sucesso.'); render(); } });
-});
-btnPdf.addEventListener('click', ()=>{
-  const items = currentItems();
-  if(items.length === 0){ alert('Nenhum item para exportar.'); return; }
-  exportPDF(items);
-});
+fileImport.addEventListener('change', (e)=>{ const f = e.target.files?.[0]; if(f) importJSONFromFile(f, ok=>{ if(ok){ alert('Dados importados com sucesso.'); render(); } }); });
+btnPdf.addEventListener('click', ()=>{ const items = currentItems(); if(items.length===0){ alert('Nenhum item para exportar.'); return; } exportPDF(items); });
 
 render();

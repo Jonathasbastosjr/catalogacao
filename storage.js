@@ -1,6 +1,6 @@
-// storage.js — utilitário de armazenamento local + edição
-const STORAGE_KEY = 'catalogo_obras_v4';
-const EDIT_KEY = 'catalogo_edit_target_v4';
+// storage.js — utilitário com edição e helpers (v5)
+const STORAGE_KEY = 'catalogo_obras_v5';
+const EDIT_KEY = 'catalogo_edit_target_v5';
 
 function getAllWorks(){
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -9,7 +9,7 @@ function getAllWorks(){
   }
   const seed = [
     {
-      artwork_id: "BA-000101",
+      artwork_id: "# 00001",
       title: "Natureza-morta com Garrafa",
       artist: { name: "Ana Souza" },
       date: "2012",
@@ -24,7 +24,7 @@ function getAllWorks(){
       images: [{ url: "https://picsum.photos/seed/ba101/800/600", view: "frontal" }]
     },
     {
-      artwork_id: "BA-000122",
+      artwork_id: "# 00002",
       title: "Retrato de Jovem",
       artist: { name: "Carlos Lima" },
       date: "2001",
@@ -42,7 +42,6 @@ function getAllWorks(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
   return seed;
 }
-
 function saveAllWorks(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
 function addWork(work){ const list=getAllWorks(); list.unshift(work); saveAllWorks(list); }
 function makeSignature(w){ return [w.title||'', w.artist?.name||'', w.date||'', w.technique||''].join(' | ').toLowerCase(); }
@@ -61,6 +60,23 @@ function updateWorkByTarget(updated, target){
   const idx = list.findIndex(w => (id && (w.artwork_id||'')==id) || (!id && makeSignature(w)==sig));
   if(idx>=0){ list[idx]=updated; saveAllWorks(list); return true; }
   return false;
+}
+// === ID sequencial "# 00001" ===
+function extractNumberFromId(id){
+  if(!id) return null;
+  const m = id.match(/#\s?(\d+)/);
+  return m ? parseInt(m[1],10) : null;
+}
+function nextArtworkId(){
+  const list = getAllWorks();
+  let maxN = 0;
+  for(const w of list){
+    const n = extractNumberFromId(w.artwork_id||'');
+    if(n && n>maxN) maxN = n;
+  }
+  const next = maxN + 1;
+  const padded = String(next).padStart(5,'0');
+  return `# ${padded}`;
 }
 function exportJSON(){
   const blob = new Blob([localStorage.getItem(STORAGE_KEY) || '[]'], {type:'application/json'});

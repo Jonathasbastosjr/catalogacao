@@ -1,6 +1,6 @@
 [
   {
-    "artwork_id": "BA-000101",
+    "artwork_id": "# 00001",
     "title": "Natureza-morta com Garrafa",
     "artist": {
       "name": "Ana Souza"
@@ -29,7 +29,7 @@
     ]
   },
   {
-    "artwork_id": "BA-000122",
+    "artwork_id": "# 00002",
     "title": "Retrato de Jovem",
     "artist": {
       "name": "Carlos Lima"

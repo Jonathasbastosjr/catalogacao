@@ -38,6 +38,7 @@ footer{padding:14px 18px;border-top:1px solid #eee;color:#666}
 .formwrap{padding:18px}
 .form{display:grid;gap:14px;max-width:920px;margin:auto}
 .form input,.form select{padding:10px;border:1px solid #ddd;border-radius:8px;width:100%}
+.form input.readonly{background:#f7f7f7;color:#555}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .actions{display:flex;gap:10px}
