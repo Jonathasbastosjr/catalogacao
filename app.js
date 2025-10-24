@@ -1,4 +1,4 @@
-// app.js v7
+// app.js v7.1-server
 const grid = document.getElementById('grid');
 const qGlobal = document.getElementById('qGlobal');
 const btnClear = document.getElementById('btnClear');
@@ -126,9 +126,9 @@ function exportPDF(items){
 
 qGlobal.addEventListener('input', render);
 btnClear.addEventListener('click', ()=>{ qGlobal.value=''; render(); });
-btnExport.addEventListener('click', exportJSON);
-btnImport.addEventListener('click', ()=>fileImport.click());
-fileImport.addEventListener('change', (e)=>{ const f = e.target.files?.[0]; if(f) importJSONFromFile(f, ok=>{ if(ok){ alert('Dados importados com sucesso.'); render(); } }); });
+btnExport?.addEventListener('click', exportJSON);
+btnImport?.addEventListener('click', ()=>document.getElementById('fileImport').click());
+document.getElementById('fileImport')?.addEventListener('change', (e)=>{ const f = e.target.files?.[0]; if(f) importJSONFromFile(f, ok=>{ if(ok){ alert('Dados importados com sucesso.'); render(); } }); });
 btnPdf.addEventListener('click', ()=>{ const items = currentItems(); if(items.length===0){ alert('Nenhum item para exportar.'); return; } exportPDF(items); });
 
 render();

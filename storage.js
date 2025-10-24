@@ -1,78 +1,16 @@
-// storage.js v7
-const STORAGE_KEY = 'catalogo_obras_v7';
-const EDIT_KEY = 'catalogo_edit_target_v7';
-
-function getAllWorks(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(raw){
-    try { return JSON.parse(raw); } catch(e){ console.warn('JSON inválido, resetando.'); }
-  }
-  const seed = [
-    {
-      artwork_id: "# 00001",
-      title: "Natureza-morta com Garrafa",
-      artist: { name: "Ana Souza" },
-      date: "2012",
-      technique: "óleo sobre tela",
-      support: "tela",
-      category: "pintura",
-      dimensions: { h_cm: 50, w_cm: 70 },
-      loan_status: "",
-      observations: "",
-      location: "Reserva A / Est. 2 / Prat. 3",
-      keywords: ["natureza-morta","garrafa","década 2010"],
-      images: [{ url: "imagens/exemplo1.jpg", view: "frontal" }]
-    },
-    {
-      artwork_id: "# 00002",
-      title: "Retrato de Jovem",
-      artist: { name: "Carlos Lima" },
-      date: "2001",
-      technique: "acrílica sobre tela",
-      support: "tela",
-      category: "pintura",
-      dimensions: { h_cm: 60, w_cm: 50 },
-      loan_status: "Emprestada",
-      observations: "Em mostra temporária.",
-      location: "Exposição Permanente / Sala 1",
-      keywords: ["retrato","anos 2000"],
-      images: [{ url: "imagens/exemplo2.jpg", view: "frontal" }]
-    }
-  ];
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-  return seed;
-}
+// storage.js v7.1-server
+const STORAGE_KEY = 'catalogo_obras_v7_server';
+const EDIT_KEY = 'catalogo_edit_target_v7_server';
+function getAllWorks(){const raw=localStorage.getItem(STORAGE_KEY);if(raw){try{return JSON.parse(raw);}catch(e){}}const seed=[{"artwork_id":"# 00001","title":"Natureza-morta com Garrafa","artist":{"name":"Ana Souza"},"date":"2012","technique":"óleo sobre tela","support":"tela","category":"pintura","dimensions":{"h_cm":50,"w_cm":70},"loan_status":"","observations":"","location":"","keywords":["natureza-morta","garrafa","década 2010"],"images":[{"url":"imagens/exemplo1.jpg","view":"frontal"}]},{"artwork_id":"# 00002","title":"Retrato de Jovem","artist":{"name":"Carlos Lima"},"date":"2001","technique":"acrílica sobre tela","support":"tela","category":"pintura","dimensions":{"h_cm":60,"w_cm":50},"loan_status":"Emprestada","observations":"Em mostra temporária.","location":"","keywords":["retrato","anos 2000"],"images":[{"url":"imagens/exemplo2.jpg","view":"frontal"}]}];localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));return seed;}
 function saveAllWorks(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
 function addWork(work){ const list=getAllWorks(); list.unshift(work); saveAllWorks(list); }
 function makeSignature(w){ return [w.title||'', w.artist?.name||'', w.date||'', w.technique||''].join(' | ').toLowerCase(); }
-function removeWorkByIdOrSignature(id, signature){
-  let list = getAllWorks();
-  if(id){ list = list.filter(w => (w.artwork_id||'') !== id); }
-  else if(signature){ list = list.filter(w => makeSignature(w) !== signature); }
-  saveAllWorks(list);
-}
+function removeWorkByIdOrSignature(id, signature){ let list = getAllWorks(); if(id){ list = list.filter(w => (w.artwork_id||'') !== id); } else if(signature){ list = list.filter(w => makeSignature(w) !== signature); } saveAllWorks(list); }
 function setEditTarget(work){ const payload = { signature: makeSignature(work), id: work.artwork_id||'', work }; localStorage.setItem(EDIT_KEY, JSON.stringify(payload)); }
 function getEditTarget(){ try { return JSON.parse(localStorage.getItem(EDIT_KEY)); } catch(e){ return null; } }
 function clearEditTarget(){ localStorage.removeItem(EDIT_KEY); }
-function updateWorkByTarget(updated, target){
-  const list = getAllWorks();
-  const id = target?.id || ''; const sig = target?.signature || '';
-  const idx = list.findIndex(w => (id && (w.artwork_id||'')==id) || (!id && makeSignature(w)==sig));
-  if(idx>=0){ list[idx]=updated; saveAllWorks(list); return true; }
-  return false;
-}
+function updateWorkByTarget(updated, target){ const list = getAllWorks(); const id = target?.id || ''; const sig = target?.signature || ''; const idx = list.findIndex(w => (id && (w.artwork_id||'')==id) || (!id && makeSignature(w)==sig)); if(idx>=0){ list[idx]=updated; saveAllWorks(list); return true; } return false; }
 function extractNumberFromId(id){ const m = (id||'').match(/#\s?(\d+)/); return m ? parseInt(m[1],10) : null; }
-function nextArtworkId(){
-  const list = getAllWorks(); let maxN = 0;
-  for(const w of list){ const n = extractNumberFromId(w.artwork_id||''); if(n && n>maxN) maxN = n; }
-  const next = maxN + 1; const padded = String(next).padStart(5,'0'); return `# ${padded}`;
-}
-function exportJSON(){
-  const blob = new Blob([localStorage.getItem(STORAGE_KEY) || '[]'], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'acervo.json'; a.click(); URL.revokeObjectURL(a.href);
-}
-function importJSONFromFile(file, onDone){
-  const fr = new FileReader();
-  fr.onload = () => { try { const data = JSON.parse(fr.result); if(!Array.isArray(data)) throw new Error('JSON deve ser um array de obras'); saveAllWorks(data); onDone?.(true); } catch(e){ alert('Falha ao importar JSON: '+e.message); onDone?.(false); } };
-  fr.readAsText(file);
-}
+function nextArtworkId(){ const list = getAllWorks(); let maxN = 0; for(const w of list){ const n = extractNumberFromId(w.artwork_id||''); if(n && n>maxN) maxN = n; } const next = maxN + 1; const padded = String(next).padStart(5,'0'); return `# ${padded}`; }
+function exportJSON(){ const blob = new Blob([localStorage.getItem(STORAGE_KEY) || '[]'], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'acervo.json'; a.click(); URL.revokeObjectURL(a.href); }
+function importJSONFromFile(file, onDone){ const fr = new FileReader(); fr.onload = () => { try { const data = JSON.parse(fr.result); if(!Array.isArray(data)) throw new Error('JSON deve ser um array de obras'); saveAllWorks(data); onDone?.(true); } catch(e){ alert('Falha ao importar JSON: '+e.message); onDone?.(false); } }; fr.readAsText(file); }

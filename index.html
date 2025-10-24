@@ -9,11 +9,14 @@
 <body>
   <header class="topbar">
     <h1>Catálogo de Acervo</h1>
-    <nav>
+    <nav class="adminArea">
       <a href="cadastrar.html" class="link">+ Cadastrar nova obra</a>
       <button id="btnPdf" class="secondary">Exportar PDF</button>
-      <button id="btnImport" class="secondary">Importar JSON</button>
-      <button id="btnExport" class="secondary">Exportar JSON</button>
+      <button id="btnImport" class="secondary adminOnly">Importar JSON</button>
+      <button id="btnExport" class="secondary adminOnly">Exportar JSON</button>
+      <a href="login.php" id="btnLogin" class="link">Entrar (admin)</a>
+      <a href="trocar_senha.php" id="btnChangePwd" class="link adminOnly">Trocar senha</a>
+      <a href="logout.php" id="btnLogout" class="link adminOnly">Sair</a>
     </nav>
   </header>
 
@@ -30,11 +33,12 @@
   </dialog>
 
   <footer>
-    <small>Para cadastrar imagens, defina a pasta na tela de cadastro. Exporte o JSON para backup.</small>
+    <small>As imagens são salvas no servidor (pasta <strong>imagens/</strong>). Exportar/Importar JSON: apenas admin.</small>
   </footer>
 
   <input id="fileImport" type="file" accept="application/json" hidden />
   <script src="storage.js"></script>
-  <script type="module" src="app.js"></script>
+  <script src="app.js"></script>
+  <script src="auth_ui.js"></script>
 </body>
 </html>
